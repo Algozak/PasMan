@@ -11,7 +11,8 @@ import hashlib
 import os
 from cryptography.fernet import Fernet
 class CredentialManager:
-    def __init__(self, filename="vault.json"):
+    def __init__(self, filename="vault.json",config_filename='config.json'):
+        self.config_filename = config_filename
         self.filename = filename
         self.__check = self.check_file_exists()
         self._vault = self._load_data()
@@ -26,6 +27,13 @@ class CredentialManager:
         if not os.path.exists(self.filename):
             with open(self.filename,'w') as f:
                 return json.dump({},f)
+        elif not os.path.exists(self.config_filename):
+            with open(self.config_filename,'w') as cf:
+                return json.dump({
+                    "attempts": 0,
+                    "lock_until": 0,
+                    "is_banned": False
+                },cf)    
 
     def add(self, service, password):
         self._vault[service] = password
@@ -54,7 +62,11 @@ class CredentialManager:
             else:
                 time.sleep(0.5)
                 print(f"\n{'-'*4}Service not found{'-'*4}\n")    
-               
+      
+
+
+
+                   
 
 class PasswordCrypto:
     def __init__(self,master_password):
@@ -139,7 +151,7 @@ class PasswordManagerApp:
                 time.sleep(0.5)
 
         print("\n\033[1;31mLocked out !\033[0m\n")
-
+    
 
 class AppInterface:
     def __init__(self,name,description,version,welcome,crypto):
@@ -150,6 +162,56 @@ class AppInterface:
         self.welcome = welcome
         self.crypto = crypto
 
+    def service_check(self,service):
+        if service in self.storage._vault:
+            print(f"\n{'-'*4}Service already exists. Try another one.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif len(service.strip()) == 0:
+            print(f"\n{'-'*4}Service name cannot be empty.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif len(service) > 25:
+            print(f"\n{'-'*4}Service name is too long. Max 25 characters.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif len(service) < 4:
+            print(f"\n{'-'*4}Service name is too short. Min 4 characters.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif service.isspace():
+            print(f"\n{'-'*4}Service name cannot be just spaces.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif ' ' in service:
+            print(f"\n{'-'*4}Service name cannot contain spaces.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+    def password_check(self,password):
+        if password.strip() == "":
+            print(f"\n{'-'*4}Password cannot be empty.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif password.isspace():
+            print(f"\n{'-'*4}Password cannot be just spaces.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif len(password) < 8:
+            print(f"\n{'-'*4}Password is too short. Min 8 characters.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif len(password) > 20:
+            print(f"\n{'-'*4}Password is too long. Max 20 characters.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif password.isalpha() or password.isdigit():
+            print(f"\n{'-'*4}Password must contain both letters and numbers.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()
+        elif ' ' in password:
+            print(f"\n{'-'*4}Password cannot contain spaces.{'-'*4}\n")
+            time.sleep(2)
+            return self.main_menu()    
     def show_banner(self):
         print(f'\n\n\n{'='*40}')
         print(f'\n{' '*12}{self.name}{' '*4}\033[32mv\033[0m{self.version}\n{' '*9}{'-'*20}\n{' '*5}{self.description}\n')
@@ -162,56 +224,11 @@ class AppInterface:
         choice = input("Select option: ")
             
         if choice == "1":
+            
             svc = input("Service: ")
-            if svc in self.storage._vault:
-                print(f"\n{'-'*4}Service already exists. Try another one.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif len(svc.strip()) == 0:
-                print(f"\n{'-'*4}Service name cannot be empty.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif len(svc) > 25:
-                print(f"\n{'-'*4}Service name is too long. Max 25 characters.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif len(svc) < 4:
-                print(f"\n{'-'*4}Service name is too short. Min 4 characters.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif svc.isspace():
-                print(f"\n{'-'*4}Service name cannot be just spaces.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif ' ' in svc:
-                print(f"\n{'-'*4}Service name cannot contain spaces.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            pwd = input("Password: ")
-            if pwd.strip() == "":
-                print(f"\n{'-'*4}Password cannot be empty.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif pwd.isspace():
-                print(f"\n{'-'*4}Password cannot be just spaces.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif len(pwd) < 8:
-                print(f"\n{'-'*4}Password is too short. Min 8 characters.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif len(pwd) > 20:
-                print(f"\n{'-'*4}Password is too long. Max 20 characters.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif pwd.isalpha() or pwd.isdigit():
-                print(f"\n{'-'*4}Password must contain both letters and numbers.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
-            elif ' ' in pwd:
-                print(f"\n{'-'*4}Password cannot contain spaces.{'-'*4}\n")
-                time.sleep(2)
-                return self.main_menu()
+            self.service_check(svc)
+            pwd = input('Password: ')
+            self.password_check(pwd)
             encrypted_pwd = self.crypto.encrypt(pwd)
             self.storage.add(svc, encrypted_pwd.decode())
             time.sleep(0.5)
