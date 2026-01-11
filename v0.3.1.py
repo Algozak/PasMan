@@ -162,7 +162,7 @@ class AppInterface:
         self.welcome = welcome
         self.crypto = crypto
 
-    def _service_check(self,service):
+    def service_check(self,service):
         if service in self.storage._vault:
             print(f"\n{'-'*4}Service already exists. Try another one.{'-'*4}\n")
             time.sleep(2)
@@ -187,7 +187,7 @@ class AppInterface:
             print(f"\n{'-'*4}Service name cannot contain spaces.{'-'*4}\n")
             time.sleep(2)
             return self.main_menu()
-    def _password_check(self,password):
+    def password_check(self,password):
         if password.strip() == "":
             print(f"\n{'-'*4}Password cannot be empty.{'-'*4}\n")
             time.sleep(2)
@@ -226,9 +226,9 @@ class AppInterface:
         if choice == "1":
             
             svc = input("Service: ")
-            self._service_check(svc)
+            self.service_check(svc)
             pwd = input('Password: ')
-            self._password_check(pwd)
+            self.password_check(pwd)
             encrypted_pwd = self.crypto.encrypt(pwd)
             self.storage.add(svc, encrypted_pwd.decode())
             time.sleep(0.5)
@@ -273,4 +273,3 @@ if __name__ == "__main__":
         print("\n\nExiting... Goodbye!\n")
         time.sleep(0.5)
         exit()
-
