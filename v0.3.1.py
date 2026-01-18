@@ -10,6 +10,9 @@ import os
 import hashlib
 import os
 from cryptography.fernet import Fernet
+import subprocess
+import sys
+
 class CredentialManager:
     def __init__(self, filename="vault.json",config_filename='config.json'):
         self.config_filename = config_filename
@@ -143,6 +146,11 @@ class PasswordManagerApp:
                 crypto_tool = PasswordCrypto(entered_pass)
                 app = AppInterface("PasMan","Your Personal Password Manager",'0.3','Welcome',crypto_tool)
                 time.sleep(0.5)
+                if sys.platform.startswith('win'):
+                    command = 'cls'
+                else:
+                    command = 'clear'
+                subprocess.run([command])    
                 app.main_menu()
                 return
             else:
