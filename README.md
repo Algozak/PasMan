@@ -50,4 +50,4 @@ Getty Images
 
         Запустите актуальную версию:
         Bash```
-            python v0.3.1.py
+            python v0.3.2.py
