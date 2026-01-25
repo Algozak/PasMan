@@ -12,7 +12,8 @@ import os
 from cryptography.fernet import Fernet
 import subprocess
 import sys
-
+import warnings
+warnings.filterwarnings('ignore', category=SyntaxWarning)
 class CredentialManager:
     def __init__(self, filename="vault.json",config_filename='config.json'):
         self.config_filename = config_filename
@@ -66,10 +67,7 @@ class CredentialManager:
                 time.sleep(0.5)
                 print(f"\n{'-'*4}Service not found{'-'*4}\n")    
       
-
-
-
-                   
+                 
 
 class PasswordCrypto:
     def __init__(self,master_password):
@@ -92,6 +90,7 @@ class PasswordCrypto:
             return self.cipher_suite.decrypt(cipher_text).decode()
         except InvalidToken:
             return "[ERROR: Invalid Master Password or Corrupted Key]"    
+
 
 
 class AuthManager:
@@ -138,7 +137,7 @@ class PasswordManagerApp:
     
         attempts = 3
         while attempts > 0:
-            entered_pass = input("Enter Master Password: ")
+            entered_pass = input("> Enter Master Password: ")
             if auth.verify(entered_pass):
                 time.sleep(0.5)
                 print(f"\n\033[1;32m{'-'*5}Access Granted!{'-'*5}\033[0m")
@@ -221,21 +220,21 @@ class AppInterface:
             time.sleep(2)
             return self.main_menu()    
     def show_banner(self):
-        print(f'\n\n\n{'='*40}')
-        print(f'\n{' '*12}{self.name}{' '*4}\033[32mv\033[0m{self.version}\n{' '*9}{'-'*20}\n{' '*5}{self.description}\n')
-        print(f'{'='*40}')
+        print(f'\n\n\n ╔{'═'*40}╗')
+        print(f'\n{' '*12}   {self.name}{' '*4}\033[32mv\033[0m{self.version}\n{' '*9}  {'═'*20}\n{' '*5}  {self.description}\n')
+        print(f' ╚{'═'*40}╝')
         time.sleep(1)
-        print(f'\n{' '*10}\033[1;32m{'-'*5} {self.welcome} {'-'*5}\033[0m\n\n')
+        print(f'\n{' '*10}\033[1;32m {'-'*5} {self.welcome} {'-'*5}\033[0m\n\n')
 
     def main_menu(self):
         print("\n\033[1;34m1\033[0m. \033[33mAdd Password\033[0m\n\033[1;34m2\033[0m. \033[33mGet Password\033[0m\n\033[1;34m3\033[0m. \033[33mShow a list of services\033[0m\n\033[1;34m4\033[0m. \033[33mDelete the password\033[0m\n\033[1;34m5\033[0m. \033[33mExit\033[0m")
-        choice = input("Select option: ")
+        choice = input("\n> Select option: ")
             
         if choice == "1":
             
-            svc = input("Service: ")
+            svc = input("> Service name: ")
             self.service_check(svc)
-            pwd = input('Password: ')
+            pwd = input('> Password: ')
             self.password_check(pwd)
             encrypted_pwd = self.crypto.encrypt(pwd)
             self.storage.add(svc, encrypted_pwd.decode())
@@ -265,7 +264,15 @@ class AppInterface:
         elif choice == "5":
             time.sleep(0.5)
             self.is_running = False
-            print(f"\nGoodbye!\n")
+            try:
+                print(r"""  ____                 _ _
+ / ___| ___   ___   __| | |__  _   _ 
+| |  _ / _ \ / _ \ / _` | '_ \| | | |
+| |_| | (_) | (_) | (_| | |_) | |_| |
+ \____|\___/ \___/ \__,_|_.__/ \__, |
+                               |___/ """)
+            except SyntaxWarning:
+                pass
             time.sleep(0.5)
         else:
             print("\nInvalid option. Try again.\n")
@@ -278,6 +285,18 @@ if __name__ == "__main__":
         app = PasswordManagerApp()
         app.run()
     except KeyboardInterrupt:
-        print("\n\nExiting... Goodbye!\n")
+        try:
+            print('\n')
+            print(r"""  ____                 _ _
+ / ___| ___   ___   __| | |__  _   _ 
+| |  _ / _ \ / _ \ / _` | '_ \| | | |
+| |_| | (_) | (_) | (_| | |_) | |_| |
+ \____|\___/ \___/ \__,_|_.__/ \__, |
+                               |___/ """)
+        except SyntaxWarning:
+            pass
         time.sleep(0.5)
         exit()
+
+
+
