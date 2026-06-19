@@ -40,14 +40,14 @@ Getty Images
 📦 Установка и запуск
 
     ---Клонируйте репозиторий:
-        Bash```
+        ```bash
             git clone https://github.com/Algozak/PasMan-Password-Manager.git
             cd PasMan-Password-Manager
 
         Установите зависимости:
-        Bash```
+        ```bash
             pip install cryptography
 
         Запустите актуальную версию:
-        Bash```
+        ```bash
             python v0.3.2.py
