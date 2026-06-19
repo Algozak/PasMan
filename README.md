@@ -36,15 +36,15 @@ PasMan хранит данные и надежно защищает их:
 
 📦 Установка и запуск
 
-    ---Клонируйте репозиторий:
-        ```bash
-        git clone https://github.com/Algozak/PasMan-Password-Manager.git
-        cd PasMan-Password-Manager
-
-        Установите зависимости:
-        ```bash
-        pip install cryptography
-
-        Запустите актуальную версию:
-        ```bash
-        python v0.3.2.py
+---Клонируйте репозиторий:
+```bash
+git clone https://github.com/Algozak/PasMan-Password-Manager.git
+cd PasMan-Password-Manager
+```
+---Установите зависимости:
+```bash
+pip install cryptography
+```
+---Запустите актуальную версию:
+```bash
+python pasman.py
