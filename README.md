@@ -2,10 +2,7 @@
 
 PasMan — это консольный менеджер паролей на Python, построенный на принципах ООП и обеспечивающий высокий уровень безопасности для ваших локальных данных.
 
-Getty Images
-🛡️ Что нового в v0.3.1 (Security Update)
-
-В отличие от ранних версий, PasMan теперь не просто хранит данные, а надежно защищает их:
+PasMan хранит данные и надежно защищает их:
 
     AES Encryption: Все пароли шифруются с использованием библиотеки cryptography (Fernet). Даже если кто-то украдет ваш JSON-файл, он увидит только бессмысленный набор символов.
 
@@ -41,13 +38,13 @@ Getty Images
 
     ---Клонируйте репозиторий:
         ```bash
-            git clone https://github.com/Algozak/PasMan-Password-Manager.git
-            cd PasMan-Password-Manager
+        git clone https://github.com/Algozak/PasMan-Password-Manager.git
+        cd PasMan-Password-Manager
 
         Установите зависимости:
         ```bash
-            pip install cryptography
+        pip install cryptography
 
         Запустите актуальную версию:
         ```bash
-            python v0.3.2.py
+        python v0.3.2.py
